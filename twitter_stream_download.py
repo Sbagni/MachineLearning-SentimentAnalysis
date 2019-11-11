@@ -16,9 +16,7 @@ from pprint import pprint
 from dbconfig import dbname, dbuser, psswd, host, parameters
 
 connection_string ='mongodb+srv://' + dbuser + ':' + psswd + host + '/' + dbname + "?" + parameters
-  
 mongo_client = pymongo.MongoClient(connection_string)
-
 
 def get_parser():
     """Get parser for command line arguments."""
@@ -57,7 +55,7 @@ class MyListener(StreamListener):
             with open(self.outfile, 'a') as f:
                 f.write(data)
                 self.currTweet += 1
-                print("Subject: {} - Current Twitter {:09} - tweets param provided {}".format(self.query, self.currTweet, self.tweets))
+                print("Subject: {} - Current Twitter {:09} - Total of Tweets to scrape {}".format(self.query, self.currTweet, self.tweets))
                 db_data(data, self.query)
                 # Check if the limit of tweets collected was achieved.
                 if ((int(self.tweets) != 0) and (self.currTweet >= int(self.tweets))):
@@ -74,11 +72,20 @@ class MyListener(StreamListener):
         print(status)
         return True
 
-
 def db_data(data, subject):
     try:        
         tweet = json.loads(data)
-        dt = psr.parse(tweet["created_at"])
+        user = {
+                "id":           tweet["user"]["id"],
+                "id_str":       tweet["user"]["id_str"], 
+                "name":         tweet["user"]["name"],
+                "screen_name":  tweet["user"]["screen_name"],
+                "location":     tweet["user"]["location"],
+                "description":  tweet["user"]["description"],
+                "created_at":   psr.parse(tweet["user"]["created_at"])
+                }
+
+        # dt = psr.parse(tweet["created_at"])
         post_Sample= {
                     '#tag':subject,
                     'text': tweet["text"],
@@ -87,8 +94,11 @@ def db_data(data, subject):
                     'module_politics': None,
                     'module_environment': None,
                     'module_hate': None,
-                    'twitter_created_at': dt,
-                    'dbai_created_at': datetime.now()
+                    'twitter_created_at': psr.parse(tweet["created_at"]),
+                    'dbai_created_at': datetime.now(),
+                    'user': user,
+                    'coordinates': tweet["coordinates"],
+                    'place': tweet["place"]
                     }
         mongo_client.dbAI.twitter.insert_one(post_Sample)
         return True
