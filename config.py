@@ -10,10 +10,10 @@ access_secret = ''
 # ===========================================================================================
 # MongoDB Credentials
 # ===========================================================================================
-psswd = ""
-dbname = ""
-dbuser = ""
-host = ""
-parameters = ''
+psswd = "ai_user123"
+dbname = "Scrape"
+dbuser = "ai_user"
+host = "@project2-ha8my.mongodb.net"
+parameters = 'retryWrites=true&w=majority'
 
 # ===========================================================================================
