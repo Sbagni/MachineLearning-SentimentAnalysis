@@ -9,13 +9,23 @@ app = Flask(__name__)
 # setup mongo connection
 mongo = PyMongo(
     app, uri='mongodb+srv://' + dbuser + ':' + psswd + host + '/' + dbname + "?" + parameters)
-# app, uri="mongodb+srv://ai_user:ai_user123@project2-ha8my.mongodb.net/dbAI?retryWrites=true&w=majority")
 query = {'#tag': {"$in": ['Greta Thunberg', 'greta',
                           'Greta']}, 'module_sent_an': {"$in": ['1', '0']}}
 
 
 @app.route('/twitter')
-def jsonified():
+def twitter():
+    query_custom = {'#tag': {"$in": ['Greta Thunberg', 'greta',
+                                     'Greta']}}
+    docs = []
+    for doc in mongo.db.twitter.find(query_custom):
+        doc.pop('_id')
+        docs.append(doc)
+    return jsonify(docs)
+
+
+@app.route('/label')
+def label():
     docs = []
     for doc in mongo.db.twitter.find(query):
         doc.pop('_id')
@@ -37,10 +47,7 @@ def index():
     # render an index.html template and pass it the data you retrieved from the database
     return render_template("index.html", result=result)
 
-
-@app.route("/map")
-def init():
-    return render_template("map.html")
+# just for future consultation
 
 
 @app.route("/filterLessRange_IG_Rank/<value>")
@@ -50,18 +57,6 @@ def filterRankRange(value):
     docs = []
     # select data less or equal the rank selected
     for doc in mongo.db.international_gross_det.find({'rank': {'$lte': value}}):
-        doc.pop('_id')
-        docs.append(doc)
-    return jsonify(docs)
-
-
-@app.route("/filterLessEq_IG_Rank/<value>")
-def filterRank(value):
-    # return items from a different collection (international_gross_det) base on the rank
-    value = int(value)
-    docs = []
-    # select data equal the rank selected
-    for doc in mongo.db.international_gross_det.find({'rank': value}):
         doc.pop('_id')
         docs.append(doc)
     return jsonify(docs)
