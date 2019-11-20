@@ -1,4 +1,4 @@
-from flask import Flask,request, render_template, jsonify, redirect
+from flask import Flask, request, render_template, jsonify, redirect
 import pymongo
 import random
 from config import dbname, dbuser, psswd, host, parameters
@@ -7,9 +7,10 @@ from flask_pymongo import PyMongo
 import pandas as pd
 import re
 import numpy as np
-from sklearn.externals import joblib 
+from sklearn.externals import joblib
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import CountVectorizer
+from bson.objectid import ObjectId
 
 app = Flask(__name__)
 
@@ -19,18 +20,20 @@ mongo = PyMongo(
 query = {'#tag': {"$in": ['Greta Thunberg', 'greta',
                           'Greta']}, 'module_sent_an': {"$in": ['1', '0']}}
 
-
+id_global = ''
 
 # Function to remove some twitter patterns
+
+
 def clear_text(text, pattern):
-    
+
     # Find the pattern
     r = re.findall(pattern, text)
-    
+
     # Removes the pattern from the sentence
     for i in r:
-        text = re.sub(i,"",text)
-    
+        text = re.sub(i, "", text)
+
     return text
 
 
@@ -43,6 +46,7 @@ def twitter():
         doc.pop('_id')
         docs.append(doc)
     return jsonify(docs)
+
 
 @app.route('/getnewtwitter')
 def getnewtwitter():
@@ -61,14 +65,14 @@ def predict():
     # Get the tweet
     tweet = request.form['tweet']
 
-    # Load the model from the file 
-    model = joblib.load('./static/models/tweet_model.sav') 
-    # Read a test file 
+    # Load the model from the file
+    model = joblib.load('./static/models/tweet_model.sav')
+    # Read a test file
     # test = pd.read_csv("./static/data/test_treated.csv")
     test = pd.read_csv("./static/data/tweets_not_labelled.csv")
-    
-    # Create the row predict tweet and add to test    
-    test.iloc[0] = ['A1', '',tweet,'']
+
+    # Create the row predict tweet and add to test
+    test.iloc[0] = ['A1', '', tweet, '']
 
     # Treat the text
     test['treated'] = np.vectorize(clear_text)(test['tweet'], "@[\w]*")
@@ -84,9 +88,8 @@ def predict():
     to_return = str(predited[0])
     if (to_return == '0'):
         to_return += ' - Sentiment Negative'
-    else: 
+    else:
         to_return += ' - Sentiment Positive'
-
 
     result = {'prediction': to_return}
     result['text'] = tweet
@@ -94,6 +97,7 @@ def predict():
     result['module_sent_an'] = request.form['human']
 
     return render_template("index.html", result=result)
+
 
 @app.route('/label')
 def label():

@@ -27,10 +27,13 @@ function getValue() {
       console.log(dataJson);
       plotMahcine(dataJson);
     });
+  } else if (valueSelect == "initial") {
+    d3.selectAll("#plot").html("");
   }
 }
 
 function plotCompare(data) {
+  //---> TEXTBLOB
   var Ytextblog = [];
   var positive = 0;
   var negative = 0;
@@ -38,7 +41,6 @@ function plotCompare(data) {
   //set unique values
   var Xtextblog = [...new Set(data.map(x => x.textblob))];
 
-  //first treatment (textblob)
   for (var i = 0; i < data.length; i++) {
     if (data[i].textblob == "neutral") neutral += 1;
     else if (data[i].textblob == "negative") negative += 1;
@@ -58,7 +60,7 @@ function plotCompare(data) {
     // text: "TextBlob",
     name: "TextBlob"
   };
-
+  //---> HUMAN LABELED
   Ytextblog = [];
   positive = 0;
   negative = 0;
@@ -66,7 +68,6 @@ function plotCompare(data) {
   //set unique values
   var Xtextblog = [...new Set(data.map(x => x.module_sent_an))];
 
-  //first treatment (human label)
   for (var i = 0; i < data.length; i++) {
     if (data[i].module_sent_an == "0") positive += 1;
     else if (data[i].module_sent_an == "1") negative += 1;
@@ -86,7 +87,33 @@ function plotCompare(data) {
     // text: "Labeled by Human",
     name: "Labeled by Human"
   };
-  var data2 = [trace1, trace2];
+  //---> MODULE SENTIMENTAL ANALYSIS
+  Ytextblog = [];
+  positive = 0;
+  negative = 0;
+  neutral = 0;
+  //set unique values
+  var Xtextblog = [...new Set(data.map(x => x.model_sent_an))];
+
+  for (var i = 0; i < data.length; i++) {
+    if (data[i].model_sent_an == "0") positive += 1;
+    else if (data[i].model_sent_an == "1") negative += 1;
+  }
+  for (var i = 0; i < Xtextblog.length; i++) {
+    if (Xtextblog[i] == "0") Xtextblog[i] = "negative";
+    else Xtextblog[i] = "positive";
+  }
+
+  Ytextblog.push(positive);
+  Ytextblog.push(negative);
+
+  var trace3 = {
+    x: Xtextblog,
+    y: Ytextblog,
+    type: "bar",
+    name: "Model - Sentimental"
+  };
+  var data2 = [trace1, trace2, trace3];
   var layout = {
     title:
       "Compare Machine Learning vs Human Analysis<br>Total: " + data.length,
@@ -125,7 +152,6 @@ function plotLabeled(data) {
     x: Xtextblog,
     y: Ytextblog,
     type: "bar",
-    // text: "Labeled by Human",
     name: "Total: " + data.length,
     showlegend: true
   };
@@ -139,6 +165,7 @@ function plotLabeled(data) {
 }
 
 function plotMahcine(data) {
+  //TEXTBLOB
   var Ytextblog = [];
   var positive = 0;
   var negative = 0;
@@ -146,7 +173,6 @@ function plotMahcine(data) {
   //set unique values
   var Xtextblog = [...new Set(data.map(x => x.textblob))];
 
-  //first treatment (textblob)
   for (var i = 0; i < data.length; i++) {
     if (data[i].textblob == "neutral") neutral += 1;
     else if (data[i].textblob == "negative") negative += 1;
@@ -163,21 +189,19 @@ function plotMahcine(data) {
     x: Xtextblog,
     y: Ytextblog,
     type: "bar",
-    // text: "TextBlob",
     name: "TextBlob"
   };
-
+  //model SENTIMENT
   Ytextblog = [];
   positive = 0;
   negative = 0;
   neutral = 0;
   //set unique values
-  var Xtextblog = [...new Set(data.map(x => x.module_sent_an))];
+  var Xtextblog = [...new Set(data.map(x => x.model_sent_an))];
 
-  //first treatment (human label)
   for (var i = 0; i < data.length; i++) {
-    if (data[i].module_sent_an == "0") positive += 1;
-    else if (data[i].module_sent_an == "1") negative += 1;
+    if (data[i].model_sent_an == "0") positive += 1;
+    else if (data[i].model_sent_an == "1") negative += 1;
   }
   for (var i = 0; i < Xtextblog.length; i++) {
     if (Xtextblog[i] == "0") Xtextblog[i] = "negative";
@@ -191,10 +215,33 @@ function plotMahcine(data) {
     x: Xtextblog,
     y: Ytextblog,
     type: "bar",
-    // text: "Labeled by Human",
-    name: "Labeled by Human"
+    name: "Model - Sentimental"
   };
-  var data2 = [trace1, trace2];
+  //POLITICAL MODEL
+  Ytextblog = [];
+  positive = 0;
+  negative = 0;
+  neutral = 0;
+  //set unique values
+  var Xtextblog = [...new Set(data.map(x => x.module_politics))];
+
+  for (var i = 0; i < data.length; i++) {
+    if (data[i].module_politics == "positive") positive += 1;
+    else if (data[i].module_politics == "negative") negative += 1;
+  }
+
+  Ytextblog.push(positive);
+  Ytextblog.push(negative);
+
+  var trace3 = {
+    x: Xtextblog,
+    y: Ytextblog,
+    type: "bar",
+    name: "Model - Political"
+  };
+
+  var data2 = [trace1, trace2, trace3];
+
   var layout = {
     title: "Machine Learning classification <br>Total: " + data.length,
     xaxis: { title: "Type of Sentiment" },

@@ -61,80 +61,62 @@
       <!-- Jumbotron Header -->
       <header class="jumbotron my-1 text-center">
         <p class="lead">
-          This page will get a random twitter and do a sentimental analysis AND
+          This page will get a random twitter message and do a sentimental analysis AND
           check if the text has political context. <br /><b
-            >Using: Textblob , Human Classification, our own Module</b
+            >Textblob , Human Classification, and Models</b
           >
         </p>
+        
         <a href="/" class="btn btn-primary btn-lg">Get a Twitter message</a>
       </header>
 
 
       <div class="row text-center">
         <div class="col-lg-12 col-md-6 mb-6">
-          <h2>Twitter message</h2>
-          <h4>{{result.text}}</h4> 
-          <form method="POST" action="/predict">
-            <input type="text" name='human'    value='{{result.module_sent_an}}' style="display:none"> 
-            <input type="text" name='textblob' value='{{result.textblob}}' style="display:none"> 
-            <input type="text" name='tweet'    value='{{result.text}}' style="display:none"> 
-            <input type="submit" class="btn btn-primary btn-lg" value="Prediction">
-          </form>
-          <h4>{{result.prediction}}</h4>  
+          <h2><img src="/static/images/twitter.png" width="50" height="50">
+          Twitter message</h2> <h3 class="text-info bg-dark">#{{result['#tag']}}</h3>
+          <h5>{{result.text}}</h5> 
           <br>
         </div>
       </div>
-      <!-- Page Features -->
       <div class="row text-center">
-        <div class="col-lg-3 col-md-6 mb-4">
-          <div class="h-75">
-            <br />
-            <h2><b>TextBlob</b></h2>
-            <br>
-            <div class="card-footer">
-              <!-- <p id="smileface"></p> -->
-              <img id="smileFace" height="42" width="42">
-            </div>
+          <div class="col-lg-12 col-md-6 mb-6">
+              <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th scope="col"><h3><b>TextBlob</b></h3></th>
+                      <th scope="col"><h3><b>Human Classification</b></h3></th>
+                      <th scope="col"><h3><b>Sentimental (Model)</b></h3></th>
+                      <th scope="col"><h3><b>Political (Model)</b></h3></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                        <td>
+                          <img id="smileFaceTextblo"></img>
+                          <p hidden id="textValueTextblog">{{result.textblob}}</p>
+                        </td>
+                        <td>
+                          <img id="smileFaceHuman"></img>
+                          <p hidden id="textValueHuman">{{result.module_sent_an}}</p></td>
+                        <td>
+                            <img id="smileFaceModel"></img>
+                            <p hidden id="textValueModel">{{result.model_sent_an}}</p> 
+                        </td>
+                        <td>
+                            <img id="smileFacePolitic"></img>
+                            <p hidden id="textValuePolitic">{{result.module_politics}}</p>  
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
           </div>
         </div>
-
-        <div class="col-lg-3 col-md-6 mb-4">
-          <div class="h-75">
-            <h2><b>Human Classification</b></h2>
-
-            <div class="card-footer">
-              <h4>{{result.module_sent_an}}</h4>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6 mb-4">
-          <div class="h-75">
-            <br />
-            <h2><b>Our Module</b></h2>
-          </br>
-            <div class="card-footer">
-              <a href="#" class="btn btn-primary">Find Out More!</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6 mb-4">
-          <div class="h-75">
-              <br />
-              <h2><b>Political</b></h2>
-            </br>
-         
-            <div class="card-footer">
-              <a href="#" class="btn btn-primary">Find Out More!</a>
-            </div>
-          </div>
-        </div>
-      </div>
+      
       <!-- /.row -->
     </div>
     <!-- /.container -->
-
+<br><br>
     <!-- Footer -->
     <footer class="py-4 bg-dark">
       <div class="container">
@@ -148,5 +130,7 @@
     <!-- Bootstrap core JavaScript -->
     <script src="/static/vendor/jquery/jquery.min.js"></script>
     <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
+    <script src="/static/js/index.js"></script>
   </body>
 </html>
