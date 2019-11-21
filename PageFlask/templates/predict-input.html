@@ -16,6 +16,11 @@
 
     <!-- Custom styles for this template -->
     <link href="/static/css/heroic-features.css" rel="stylesheet" />
+    <link href="/static/css/input-page.css" rel="stylesheet" />
+
+    <!-- Load Twitter icon as favicon -->
+    <link rel="icon" href="../static/images/favicon.ico"> 
+
   </head>
 
   <body>
@@ -36,46 +41,55 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
+            <li class="nav-item">
               <a class="nav-link" href="/"
                 >Home
-                <span class="sr-only">(current)</span>
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/plot">Plot</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Forms</a>
+            <li class="nav-item active">
+              <a class="nav-link" href="/predictinput">Forms</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Tableau</a>
+              <a class="nav-link" href="https://public.tableau.com/profile/sumati2165#!/vizhome/Final_analysis/Story1?publish=yes" target="_blank">Tableau</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
-
-    <!-- Page Content -->
-    <div class="container" style="height: 100%;">
-      <!-- Jumbotron Header -->
-      <form method="POST" action="/predicttext" >
-        <!-- <input type="submit" class="btn btn-primary btn-lg" value="Prediction"> -->
-        <div class="form-group">
-            <label for="text">Text to Classify:</label>
-            <input type="text" class="form-control" name='text' value='{{result.text}}'> 
-        </div>
-        <div class="form-group">
-            <label for="treated">Text treated:</label>
-            <input type="treated" class="form-control">
-        </div>
-        <div class="w-100 d-flex flex-column align-items-center">
-            <button type="submit" class="btn btn-primary btn-lg my-4">Apply the ML Model</button>
-            <img src="../static/images/{{result.img}}.png">
-        </div>
-      </form>
-    </div>
-
+    <!-- Page content -->
+    <section id="cover" class="mt-4">
+      <div id="cover-caption">
+          <div class="container">
+              <div class="row text-white">
+                  <div class="col-xl-11 col-lg-11 col-md-11 col-sm-11 mx-auto text-center">
+                      <h1 class="display-4 py-2 text-truncate">Applying the Sentiment Model</h1>
+                      <div class="">
+                        <form class="w-100 pb-4" method="POST" action="/predicttext">
+                          <div class="form-group">
+                              <label style="font-size:20px;" for="text">Text to classify</label>
+                              <input type="text" class="form-control" name='text' value='{{result.text}}'> 
+                          </div>
+                          <div class="form-group">
+                              <label style="font-size:20px;" for="treated" >Text after treatment</label>
+                              <input type="treated" class="form-control" name='treated' value='{{result.treated}}' disabled> 
+                          </div>
+                          <div class="w-100 d-flex flex-column align-items-center">
+                              <button type="submit" class="btn btn-primary btn-lg my-4">Apply the Model</button>
+                              <div class="square" style="height: 85px;width: 85px;">
+                                <img style='height: 100%; width: 100%; object-fit: contain' src="../static/images/{{result.img}}.png" alt="Classification">
+                              </div>
+                          </div>
+                        </form>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </section>
+ 
     <!-- Footer -->
     <footer class="fixed-bottom py-4 bg-dark">
       <div class="container">
