@@ -7,13 +7,12 @@ from tweepy.streaming import StreamListener
 import time
 import argparse
 import string
-import config
 import json
 import pymongo
 from dateutil import parser as psr
 from datetime import datetime
 from pprint import pprint
-from dbconfig import dbname, dbuser, psswd, host, parameters
+from config import dbname, dbuser, psswd, host, parameters, consumer_key, consumer_secret, access_token, access_secret
 
 connection_string ='mongodb+srv://' + dbuser + ':' + psswd + host + '/' + dbname + "?" + parameters
 mongo_client = pymongo.MongoClient(connection_string)
@@ -86,7 +85,7 @@ def db_data(data, subject):
                 }
 
         # dt = psr.parse(tweet["created_at"])
-        post_Sample= {
+        tweetObj = {
                     '#tag':subject,
                     'text': tweet["text"],
                     'module_sent_an': None,
@@ -100,7 +99,7 @@ def db_data(data, subject):
                     'coordinates': tweet["coordinates"],
                     'place': tweet["place"]
                     }
-        mongo_client.dbAI.twitter.insert_one(post_Sample)
+        mongo_client.dbAI.twitter.insert_one(tweetObj)
         return True
     except BaseException as e:
         print("Error db_data: %s" % str(e))
@@ -137,8 +136,8 @@ def parse(cls, api, raw):
 if __name__ == '__main__':
     parser = get_parser()
     args = parser.parse_args()
-    auth = OAuthHandler(config.consumer_key, config.consumer_secret)
-    auth.set_access_token(config.access_token, config.access_secret)
+    auth = OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_secret)
     api = tweepy.API(auth)
 
     twitter_stream = Stream(auth, MyListener(args.data_dir, args.query, args.tweets))

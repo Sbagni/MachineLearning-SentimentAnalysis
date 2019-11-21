@@ -12,6 +12,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk import tokenize
 import nltk
+import tweet_grabber
 
 app = Flask(__name__)
 
@@ -49,17 +50,17 @@ def classify_text( text ):
     test = pd.read_csv("./static/data/to_test.csv")
 
     # Remove links 
-    text = re.sub(r'https?://\S+', '', text, flags=re.MULTILINE)
-    text = re.sub(r'http?://\S+', '',  text, flags=re.MULTILINE)
+    text = re.sub(r'https?://\S+', ' ', text, flags=re.MULTILINE)
+    text = re.sub(r'http?://\S+', ' ',  text, flags=re.MULTILINE)
     # Remove ampersand pattern
-    text = re.sub('&amp;', '',         text, flags=re.MULTILINE)
+    text = re.sub('&amp;', ' ',         text, flags=re.MULTILINE)
 
     # Remove twitter patterns
-    text = re.sub("@[\w]*", '', text, flags=re.MULTILINE)
-    text = re.sub("RT :*", '', text, flags=re.MULTILINE)
+    text = re.sub("@[\w]*", ' ', text, flags=re.MULTILINE)
+    text = re.sub("RT :*", ' ', text, flags=re.MULTILINE)
 
     # Remove punctuation, numbers, and special characters
-    text = re.sub("[^a-zA-Z# ]", '', text, flags=re.MULTILINE)
+    text = re.sub("[^a-zA-Z# ]", ' ', text, flags=re.MULTILINE)
 
     # Remove stopwords
     token_space = tokenize.WhitespaceTokenizer()
@@ -172,30 +173,34 @@ def predictinput():
     result = {'text': ''}
     result['img'] = 'twitter'
     result['treated'] = ''
-
     return render_template("predict-input.html", result=result)
 
 @app.route('/predicttext', methods=["POST"])
 def predicttext():
-
     # Get the text
     text = request.form['text']
+    
+    if ( 'predict' ==  request.form['action']):
+        # Call function to clasify the tweet
+        to_return = classify_text(text)
+        classification = to_return[0]
 
-    # Call function to clasify the tweet
-    to_return = classify_text(text)
-    classification = to_return[0]
+        img = ''
+        if (classification == '0'):
+            img = 'NEGATIVE'
+        else: 
+            img = 'POSITIVE'
 
-    img = ''
-    if (classification == '0'):
-        img = 'NEGATIVE'
+        result = {'text': text}
+        result['img'] = img
+        result['treated'] = to_return[1]
     else: 
-        img = 'POSITIVE'
-
-    result = {'text': text}
-    result['img'] = img
-    result['treated'] = to_return[1]
-
-
+        # Get a tweet on the fly
+        text = tweet_grabber.run_api('Greta')
+        result = {'text': text}
+        result['img'] = 'twitter'
+        result['treated'] = ''
+    
     return render_template("predict-input.html", result=result)
 
 if __name__ == "__main__":

@@ -77,10 +77,19 @@
                               <input type="treated" class="form-control" name='treated' value='{{result.treated}}' disabled> 
                           </div>
                           <div class="w-100 d-flex flex-column align-items-center">
-                              <button type="submit" class="btn btn-primary btn-lg my-4">Apply the Model</button>
-                              <div class="square" style="height: 85px;width: 85px;">
-                                <img style='height: 100%; width: 100%; object-fit: contain' src="../static/images/{{result.img}}.png" alt="Classification">
-                              </div>
+                            <div class="w-50 d-flex flex-row justify-content-around">  
+                              <button id="btn_grab" type="submit" class="btn btn-primary my-4" style="width:220px;" name="action" value="grab_tweet">
+                                <span id="span_grab" class=""></span>
+                                Get tweet on the fly
+                              </button>
+                              <button id="btn_pred" type="submit" class="btn btn-primary my-4" style="width:220px;" name="action" value="predict">
+                                  <span id="span_pred" class=""></span> 
+                                  Apply the Model 
+                              </button> 
+                            </div>
+                            <div class="square" style="height: 85px;width: 85px;">
+                              <img style='height: 100%; width: 100%; object-fit: contain' src="../static/images/{{result.img}}.png" alt="Classification">
+                            </div>
                           </div>
                         </form>
                       </div>
@@ -89,7 +98,6 @@
           </div>
       </div>
     </section>
- 
     <!-- Footer -->
     <footer class="fixed-bottom py-4 bg-dark">
       <div class="container">
@@ -103,7 +111,15 @@
     <!-- Bootstrap core JavaScript -->
     <script src="/static/vendor/jquery/jquery.min.js"></script>
     <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
+    <script>
+      $("#btn_pred").click( function (index) {
+        $("#span_pred").addClass('spinner-border spinner-border-sm');
+      });      
+      $("#btn_grab").click( function (index) {
+        $("#span_grab").addClass('spinner-border spinner-border-sm');
+      });      
+    </script>
+  
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="/static/js/plot.js"></script>
