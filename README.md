@@ -1,7 +1,7 @@
-# Project: Sentimental and Political Analysis - Machine Learning
+# Project: Sentimental and Political Analysis through Machine Learning
 
 Sentimental Analysis is an interesting area of machine learning.This project is based on sentimental and political analysis of tweets for Greta Thunberg,( #Greta #Greta Thunberg).We started the project like any ETL project beginning with extraction. The first stage was to extract the data and for this we used twitter API to get tweets posted for Greta. We used used MongoDB and flask app for this. Then the data was labelled manually to get it ready for developing our model. We trained two models to treat the texts as positive or negative and political or non-plitical respectively.
-Another equally important feature of this project was the comparison between the TextBlob, manual labelling(human classification) and machine learning model. For data visualation we used plotly and tableau to tell the story of the data we worked with.
+Another equally important feature of this project was the comparison between the TextBlob, manual labelling(human classification) and machine learning model. For data visualation we used plotly and tableau. 
 
 
 # Publish
